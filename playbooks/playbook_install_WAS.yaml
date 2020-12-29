@@ -1,0 +1,8 @@
+---
+- name: Install WAS in target Machine
+  hosts: wap-servers
+  gather_facts: false
+  become: yes
+  roles:
+    # - roles/install_WAS
+    - roles/install_WAS_Fixpacks

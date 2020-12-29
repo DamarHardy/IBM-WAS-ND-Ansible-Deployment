@@ -1,0 +1,8 @@
+---
+- name: Install All Necessary Package to Target Machine
+  hosts: wap-servers
+  gather_facts: false
+  become: yes
+  roles:
+    - roles/copy_rhel_packages
+    - roles/install_rhel_packages

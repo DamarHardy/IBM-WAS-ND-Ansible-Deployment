@@ -1,0 +1,12 @@
+- name: Create Folder in Target Machine
+  file:
+    path: "{{RPMRemoteDir}}"
+    state: directory
+    mode: '0755'
+
+- name: Copy the RPM Packages to Target Machine
+  copy:
+    src: "/home/damarhardy/IBMWebsphere/RHELPackages/"
+    dest: "/home/damarhardy/IBMWebsphere/RHELPackages/"
+    mode: '0755'
+

@@ -1,0 +1,22 @@
+- name: Find All Packages
+  find:
+    paths: "{{RPMRemoteDir}}"
+    pattern: "*.rpm"
+  register: result
+
+- name: Install The Packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    skip_broken: true
+  ignore_errors: true
+  loop: "{{result.files | json_query('[*].path')}}"
+
+- name: Reinstall The Packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    skip_broken: true
+  ignore_errors: true
+  loop: "{{result.files | json_query('[*].path')}}"
+

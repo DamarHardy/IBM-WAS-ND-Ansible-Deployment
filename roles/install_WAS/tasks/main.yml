@@ -1,0 +1,45 @@
+- name: Create Folder in Target Machine
+  file:
+    path: "{{ InstallerRemoteDir }}"
+    state: directory
+    mode: '0755'
+
+- name: Copy and Unzip WAS
+  unarchive:
+    src: "{{ InstallerLocalDir }}/{{ item }}"
+    dest: "{{ InstallerRemoteDir }}/"
+  loop: "{{ WAS_Installer }}"
+
+- name: Quote WAS Packages Name
+  shell:
+    chdir: /opt/IBM/InstallationManager/eclipse/tools/
+    cmd: "./imcl listAvailablePackages -repositories {{ InstallerRemoteDir }}/repository.config"
+  register: product_name
+
+- debug:
+    msg: "{{product_name.stdout}}"
+
+- name: Create Installation Directory in Target Machine
+  file:
+    path: "{{ DestRemoteDir }}/WAS"
+    state: directory
+    mode: '0755'
+
+- name: Install WAS
+  shell:
+    chdir: /opt/IBM/InstallationManager/eclipse/tools/
+    cmd: "./imcl install {{ product_name.stdout }} -repositories {{ InstallerRemoteDir }}/repository.config -installationDirectory {{ DestRemoteDir }}/WAS/ -properties user.wasjava=java8 -acceptLicense"
+
+- name: Verify WAS Installation
+  shell:
+    chdir: /opt/IBM/InstallationManager/eclipse/tools/
+    cmd: "./imcl listInstalledPackages"
+  register: verify
+
+- debug:
+    msg: "{{verify.stdout}}"
+
+- name: Delete WAS Installer Folder
+  file:
+    path: "{{ InstallerRemoteDir }}"
+    state: absent

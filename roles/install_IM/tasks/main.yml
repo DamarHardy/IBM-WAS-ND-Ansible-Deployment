@@ -1,0 +1,20 @@
+- name: Create Folder in Target Machine
+  file:
+    path: "{{ InstallerRemoteDir }}"
+    state: directory
+    mode: '0755'
+
+- name: Copy and Unzip IM
+  unarchive:
+    src: "{{ InstallerLocalDir }}/{{ IM_Installer }}"
+    dest: "{{ InstallerRemoteDir }}/"
+
+- name: Install IM
+  shell:
+    chdir: "{{ InstallerRemoteDir }}/"
+    cmd: "./installc -log  /home/damarhardy/IBMWebsphere/im_install.log -acceptLicense -showProgress"
+
+- name: Delete IM Installer Folder
+  file:
+    path: "{{ InstallerRemoteDir }}"
+    state: absent

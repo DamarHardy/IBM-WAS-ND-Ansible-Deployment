@@ -1,0 +1,51 @@
+- name: Create Folder in Target Machine
+  file:
+    path: "{{ InstallerRemoteDir }}"
+    state: directory
+    mode: '0755'
+
+- name: Copy and Unzip WAS Fixpacks
+  unarchive:
+    src: "{{ InstallerLocalDir }}/{{ item }}"
+    dest: "{{ InstallerRemoteDir }}/"
+  loop: "{{ WAS_Fixpacks }}"
+
+- name: Quote WAS Fixpacks Name
+  shell:
+    chdir: /opt/IBM/InstallationManager/eclipse/tools/
+    cmd: "./imcl listAvailablePackages -repositories {{ InstallerRemoteDir }}/repository.config"
+  register: product_name
+
+- set_fact:
+    fixpacks: "{{product_name.stdout_lines | select('match',regex) | list}}"
+  vars:
+    regex: '^(.*)com.ibm.websphere.ND.v85_8.5.(.*)$'
+  
+- debug: msg={{item}}
+  loop: "{{fixpacks}}"
+
+- name: Install WAS Fixpacks
+  shell:
+    chdir: /opt/IBM/InstallationManager/eclipse/tools/
+    cmd: "./imcl install {{ item }} -repositories {{ InstallerRemoteDir }}/repository.config -installationDirectory {{ DestRemoteDir }}/WAS/ -acceptLicense"
+  loop: "{{fixpacks}}"
+
+# - name: UnInstall WAS Fixpacks
+#   shell:
+#     chdir: /opt/IBM/InstallationManager/eclipse/tools/
+#     cmd: "./imcl rollback {{ item }} -repositories {{ InstallerRemoteDir }}/repository.config -installationDirectory {{ DestRemoteDir }}/WAS/ -acceptLicense"
+#   loop: "{{fixpacks}}"
+
+- name: Verify WAS Installation
+  shell:
+    chdir: /opt/IBM/InstallationManager/eclipse/tools/
+    cmd: "./imcl listInstalledPackages -long"
+  register: verify
+
+- debug:
+    msg: "{{verify.stdout_lines}}"
+
+- name: Delete WAS Installer Folder
+  file:
+    path: "{{ InstallerRemoteDir }}"
+    state: absent
