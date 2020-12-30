@@ -1,0 +1,18 @@
+- name: Create Cell DMGR
+  shell:
+    chdir: "{{ WAS_Root_Dir }}/bin"
+    cmd: ./manageprofiles.sh -create -templatePath ./../profileTemplates/cell/dmgr -nodeProfilePath ./../profiles/{{ SvrProfileName }} -profileName {{ DmgrprofileName }} -cellName {{ cellName }} -nodeName {{ nodeName }} -appServerNodeName {{ appServerNodeName }}
+
+- name: Create Cell AppServer
+  shell:
+    chdir: "{{ WAS_Root_Dir }}/bin"
+    cmd: ./manageprofiles.sh -create -templatePath ./../profileTemplates/cell/default -dmgrProfilePath ./../profiles/{{DmgrprofileName}} -portsFile ./../profiles/{{DmgrprofileName}}/properties/portdef.props -nodePortsFile ./../profiles/{{DmgrprofileName}}/properties/nodeportdef.props -profileName {{SvrProfileName}} -cellName {{ cellName }} -nodeName {{ nodeName }} -appServerNodeName {{ appServerNodeName }}
+      
+- name: Verify Cell Profiles
+  shell:
+    chdir: "{{ WAS_Root_Dir }}/bin"
+    cmd: ./manageprofiles.sh -listProfiles
+  register: verify
+
+- debug:
+    msg: "{{verify.stdout_lines}}"

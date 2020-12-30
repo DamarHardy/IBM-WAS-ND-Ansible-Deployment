@@ -1,0 +1,7 @@
+---
+- name: Create WAS Profiles
+  hosts: wap-servers
+  gather_facts: false
+  become: yes
+  roles:
+    - roles/create_cell_profiles

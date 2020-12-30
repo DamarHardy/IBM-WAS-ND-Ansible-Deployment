@@ -1,9 +1,14 @@
+#--Local Files Source--
 RPMDirectory: "/home/damarhardy/IBMWebsphere/RHELPackages"
 InstallerLocalDir: "/home/damarhardy/IBMWebsphere/Installer"
 
+#--Remote Files Source-
 RPMRemoteDir: "/home/damarhardy/IBMWebsphere/RHELPackages"
 InstallerRemoteDir: "/home/damarhardy/IBMWebsphere/Installer"
 DestRemoteDir: "/home/damarhardy/IBMWebsphere"
+
+#--WAS Root Installation Directory--
+WAS_Root_Dir: "IBMWebsphere/WAS"
 
 IM_Installer: "agent.installer.linux.gtk.x86_64_1.9.1004.20201109_1718.zip"
 WAS_Installer:
@@ -15,3 +20,10 @@ WAS_Fixpacks:
   - 8.5.5-WS-WAS-FP018-part1.zip
   - 8.5.5-WS-WAS-FP018-part2.zip
   - 8.5.5-WS-WAS-FP018-part3.zip
+
+#--Cell Profiles Properties--
+SvrProfileName: AppSvr01
+DmgrprofileName: Dmgr001
+cellName: DefaultCell01
+nodeName: DefaultNode01
+appServerNodeName: federated_node_name
